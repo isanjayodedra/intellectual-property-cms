@@ -1,0 +1,16 @@
+{
+  "name": "queue-service",
+  "version": "1.0.0",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "worker": "node src/worker.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "bullmq": "^2.0.0",
+    "ioredis": "^5.3.0",
+    "dotenv": "^10.0.0"
+  }
+}

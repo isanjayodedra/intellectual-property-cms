@@ -1,0 +1,21 @@
+{
+  "name": "intellectual-property",
+  "version": "1.0.0",
+  "description": "Intellectual property (IP) refers to creations of the mind, like inventions, literary and artistic works, designs, and symbols, names, and images used in commerce, protected by law through patents, copyright, and trademarks.",
+  "author": "Yellow Panther",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "common-service",
+    "auth-service",
+    "article-service",
+    "queue-service",
+    "gateway"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix article-service\" \"npm run dev --prefix auth-service\" \"npm run dev --prefix common-service\" \"npm run dev --prefix gateway\"  \"npm run dev --prefix queue-service\" "
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.0"
+  }
+}
