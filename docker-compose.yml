@@ -1,0 +1,110 @@
+version: '3.9'
+
+services:
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: ipcms_db
+      MYSQL_USER: ipcms_user
+      MYSQL_PASSWORD: ipcms_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  redis:
+    image: redis:6.2
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    ports:
+      - "3001:3001"
+    env_file:
+      - ./auth-service/.env
+    depends_on:
+      - mysql
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  article-service:
+    build: ./article-service
+    container_name: article-service
+    ports:
+      - "3004:3004"
+    env_file:
+      - ./article-service/.env
+    depends_on:
+      - mysql
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3004/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  common-service:
+    build: ./common-service
+    container_name: common-service
+    ports:
+      - "3002:3002"
+    env_file:
+      - ./common-service/.env
+    depends_on:
+      - mysql
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3002/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  queue-service:
+    build: ./queue-service
+    container_name: queue-service
+    ports:
+      - "3003:3003"
+    env_file:
+      - ./queue-service/.env
+    depends_on:
+      - redis
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3003/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  gateway:
+    build: ./gateway
+    container_name: gateway
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./gateway/.env
+    depends_on:
+      - auth-service
+      - article-service
+      - common-service
+      - queue-service
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  mysql_data:

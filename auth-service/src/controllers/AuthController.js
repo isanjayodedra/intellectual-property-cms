@@ -39,6 +39,39 @@ class AuthController {
         }
     };
 
+    /**
+     * @swagger
+     * /auth/login:
+     *   post:
+     *     summary: Login user
+     *     tags: [Auth]
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               email:
+     *                 type: string
+     *               password:
+     *                 type: string
+     *             example:
+     *               email: testuser@example.com
+     *               password: Test@1234
+     *     responses:
+     *       200:
+     *         description: Successfully logged in
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 token:
+     *                   type: string
+     *       401:
+     *         description: Invalid credentials
+     */
     login = async (req, res) => {
         try {
             const { email, password } = req.body;

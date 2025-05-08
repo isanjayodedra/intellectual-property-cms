@@ -11,6 +11,34 @@ process.env.PWD = process.cwd();
 
 const app = express();
 
+//-------For Swager docs----------------
+    const swaggerJsdoc = require('swagger-jsdoc');
+    const swaggerUi = require('swagger-ui-express');
+    const fs = require('fs');
+    const path = require('path');
+    const swaggerDefinition = require('./docs/swaggerDef');
+    const options = {
+    swaggerDefinition,
+    apis: ['./src/route/*.js', './src/controllers/*.js'],
+    };
+    const swaggerSpec = swaggerJsdoc(options);
+    // Serve generated swagger.json separately
+    app.get('/swagger.json', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swaggerSpec);
+    });
+    // Serve the custom HTML for Swagger UI
+    app.get('/docs', (req, res) => {
+    res.sendFile(path.join(__dirname, './docs/swagger-template.html'));
+    });
+//-------For Swager docs----------------
+
+//-------- for Health check----------
+const healthCheckRoute = require('./route/healthCheck');
+app.use('/', healthCheckRoute); // Attach route
+//-------- for Health check----------
+
+
 // enable cors
 app.use(cors());
 app.options('*', cors());

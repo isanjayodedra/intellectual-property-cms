@@ -8,9 +8,11 @@
     "worker": "node src/worker.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
     "bullmq": "^2.0.0",
+    "dotenv": "^10.0.0",
+    "express": "^4.18.2",
     "ioredis": "^5.3.0",
-    "dotenv": "^10.0.0"
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   }
 }
