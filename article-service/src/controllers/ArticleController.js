@@ -26,14 +26,15 @@ class ArticleController {
   /**
    * GET /api/articles
    */
-  listPublished = async (req, res) => {
+  listPublished = async (req, res, next) => {
     try {
-      const { response, statusCode } = await this.articleService.listPublished();
-      // now response === { status, code, message, data }
-    const { status, message, data } = response;
-      res.status(statusCode).json({ status, message, data });
+      const { page = '1', size = '10' } = req.query;
+      const { response, statusCode } = await this.articleService.listPublished(page, size);
+      const { status, message, data } = response;
+      return res.status(statusCode).json({ status, message, data });
     } catch (e) {
       logger.error(e);
+      next(e);
       res.status(httpStatus.BAD_GATEWAY).send(e);
     }
   };

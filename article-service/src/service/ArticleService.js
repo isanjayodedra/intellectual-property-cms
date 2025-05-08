@@ -50,20 +50,28 @@ class ArticleService {
   /**
    * List all published articles
    */
-  listPublished = async () => {
+  listPublished = async (page = 1, size = 10) => {
     try {
-      const list = await this.articleDao.findAllPublished();
+      const limit  = Math.max(1, parseInt(size, 10));
+      const offset = (Math.max(1, parseInt(page, 10)) - 1) * limit;
+
+      const { count: totalDocs, rows: articles } = await this.articleDao.findAndCountPublished({ limit, offset });
+      const totalPages = Math.ceil(totalDocs / limit);
+
       return responseHandler.returnSuccess(
         httpStatus.OK,
         'Published articles fetched',
-        list
+        { articles, totalDocs, totalPages, page: Number(page), limit }
       );
-    } catch (e) {
-      logger.error(e);
-      return responseHandler.returnError(httpStatus.INTERNAL_SERVER_ERROR, 'Could not fetch articles');
+    } catch (err) {
+      logger.error(err);
+      return responseHandler.returnError(
+        httpStatus.INTERNAL_SERVER_ERROR,
+        'Could not fetch paginated articles'
+      );
     }
   };
-
+  
   /**
    * Get one article by ID
    * @param {Number} id

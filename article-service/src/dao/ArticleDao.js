@@ -10,6 +10,29 @@ class ArticleDao extends SuperDao {
     super(Article);
   }
 
+  /**
+   * Paginated & filtered fetch
+   * @param {Object} opts
+   * @param {number} opts.limit    number per page
+   * @param {number} opts.offset   skip count
+   */
+  async findAndCountPublished({ limit, offset }) {
+    return this.Model.findAndCountAll({
+      where: { status: 'published' },
+      include: [
+        { model: ArticleTranslation, as: 'ArticleTranslations' },
+        { model: ArticleBlock,       as: 'ArticleBlocks' },
+        { model: Category,           through: 'ArticleCategory' },
+        { model: Tag,                through: 'ArticleTag' },
+      ],
+      distinct: true,      // ← tell Sequelize to COUNT(DISTINCT primary key)
+      col: 'id',           // ← count distinct Article.id
+      limit,
+      offset,
+      order: [['published_at', 'DESC']],
+    });
+  }
+
   async findAllPublished() {
     try{
       const publishArticle = await Article.findAll({
