@@ -11,8 +11,9 @@ const ctrl = new ArticleController();
 
 // Public
 router.get('/',            ctrl.listPublished);
-router.get('/slug/:slug',  ctrl.checkSlug);
 router.get('/:id',         ctrl.getById);
+router.get('/slug/:slug',  ctrl.checkSlug);
+
 
 // Protected
 router.post('/',  auth, validate(articleSchema), ctrl.create);

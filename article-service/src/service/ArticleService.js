@@ -4,6 +4,7 @@ const ArticleDao        = require('../dao/ArticleDao');
 const responseHandler   = require('../helper/responseHandler');
 const logger            = require('../config/logger');
 const { articleConstant } = require('../config/constant');
+const cache = require('../middleware/cache');
 
 class ArticleService {
   constructor() {
@@ -78,11 +79,17 @@ class ArticleService {
    */
   getArticleById = async (id) => {
     try {
-      const art = await this.articleDao.findById(id);
-      if (!art) {
-        return responseHandler.returnError(httpStatus.NOT_FOUND, 'Article not found');
+      const cacheKey = `article:${id}`;
+      // await cache.del(cacheKey);      // for delete stored cache data
+      let article = await cache.get(cacheKey);
+      if (!article) {
+        article = await this.articleDao.findById(id);
+        if (!article) {
+          return responseHandler.returnError(httpStatus.NOT_FOUND, 'Article not found');
+        }
+        await cache.set(cacheKey, article);
       }
-      return responseHandler.returnSuccess(httpStatus.OK, 'Article fetched', art);
+      return responseHandler.returnSuccess(httpStatus.OK, 'Article fetched', article);
     } catch (e) {
       logger.error(e);
       return responseHandler.returnError(httpStatus.INTERNAL_SERVER_ERROR, 'Error fetching article');

@@ -44,9 +44,9 @@ class ArticleController {
    */
   getById = async (req, res) => {
     try {
-      const result = await this.articleService.getArticleById(req.params.id);
-      const { status, message, data } = result;
-      res.status(status).send({ status, message, data });
+      const { response, statusCode } = await this.articleService.getArticleById(req.params.id);
+      const { status, message, data } = response;
+      return res.status(statusCode).json({ status, message, data });
     } catch (e) {
       logger.error(e);
       res.status(httpStatus.BAD_GATEWAY).send(e);

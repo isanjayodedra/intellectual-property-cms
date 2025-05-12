@@ -52,13 +52,15 @@ class ArticleDao extends SuperDao {
   }
 
   async findById(id) {
-    return Article.findByPk(id, {
+    const ArticleById = await Article.findByPk(9, {
       include: [
-        { model: ArticleTranslation, as: 'translations' },
+        { model: ArticleTranslation, as: 'ArticleTranslations' },
+        { model: ArticleBlock, as: 'ArticleBlocks' },
         { model: Category, through: 'ArticleCategory' },
         { model: Tag,      through: 'ArticleTag' }
       ]
     });
+    return ArticleById;
   }
 
   async update(id, data) {
