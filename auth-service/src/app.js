@@ -55,6 +55,7 @@ passport.use('jwt', jwtStrategy);
 app.get('/', async (req, res) => {
     res.status(200).send('Congratulations! Auth Service API is working!');
 });
+app.use('/uploads', express.static(path.join(__dirname, '../uploads/user'))); // serve uploaded files
 app.use('', routes);
 
 // send back a 404 error for any unknown api request

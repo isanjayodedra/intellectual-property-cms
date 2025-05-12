@@ -25,7 +25,7 @@ const router = express.Router();
  */
 router.get('/healthz', (req, res) => {
   res.status(200).json({
-    service: '[SERVICE NAME]', // replace with real service name
+    service: 'Common Service', // replace with real service name
     status: 'UP',
   });
 });

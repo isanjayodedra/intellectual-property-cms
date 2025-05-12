@@ -50,6 +50,20 @@ class UserService {
     };
 
     /**
+     * Update user
+     * @param {Object} userBody
+     * @returns {Object}
+     */
+    updateUser = async (id, userBody) => {
+        let user = await this.userDao.findByPk(id);
+        if (!user) return responseHandler.returnError(httpStatus.BAD_REQUEST, 'User not Found!!');
+        const result = await this.userDao.updateById(userBody, id)
+        user = user.toJSON();
+        delete user.password;
+        return { ...user, ...userBody };
+      };
+
+    /**
      * Get user
      * @param {String} email
      * @returns {Object}

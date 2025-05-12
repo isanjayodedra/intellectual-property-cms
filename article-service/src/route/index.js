@@ -1,5 +1,4 @@
 const express = require('express');
-const authRoute = require('./authRoute');
 const articleRoutes = require('./articleRoutes');
 const articletranslationRoutes = require('./articleTranslationRoutes');
 const blockRoutes = require('./blockRoutes');
@@ -12,10 +11,6 @@ const articletagRoutes = require('./articleTagRoutes');
 const router = express.Router();
 
 const defaultRoutes = [
-    {
-        path: '/auth',
-        route: authRoute,
-    },
     {
         path: '/articles',
         route: articleRoutes,

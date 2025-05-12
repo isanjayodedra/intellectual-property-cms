@@ -11,7 +11,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/article-service/src/index.js"
+            "program": "${workspaceFolder}/auth-service/src/index.js"
         }
     ]
 }

@@ -12,6 +12,10 @@ class UserDao extends SuperDao {
         return User.findOne({ where: { email } });
     }
 
+    async findByUsername(username) {
+        return User.findOne({ where: { username } });
+    }
+
     async isEmailExists(email) {
         return User.count({ where: { email } }).then((count) => {
             if (count != 0) {
