@@ -4,7 +4,7 @@ const TokenService = require('../service/TokenService');
 const UserService = require('../service/UserService');
 const logger = require('../config/logger');
 const { tokenTypes } = require('../config/tokens');
-const { saveDeduplicatedFile } = require('../middleware/uploads');
+const { saveDeduplicatedFile } = require('../middleware/upload');
 
 class UserController {
     constructor() {
