@@ -13,9 +13,6 @@ class UserController {
         this.authService = new AuthService();
     }
 
-    test = async (req, res) => {
-      res.status(500).send('test success');
-    }
   update = async (req, res) => {
     try {
       let userData = req.body;

@@ -9,7 +9,6 @@ const { upload } = require('../middleware/upload');
 const userController = new UserController();
 const userValidator = new UserValidator();
 
-router.get('/test', userController.test);
 router.put('/update', auth(), upload.single('image'), userValidator.userUpdateValidator, userController.update);
 
 module.exports = router;
