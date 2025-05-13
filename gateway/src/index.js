@@ -3,14 +3,14 @@ const express = require('express');
 const rateLimit = require('express-rate-limit');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const { errorConverter, errorHandler } = require('./middlewares/error');
+const path = require('path');
+const fs = require('fs');
 
 const app = express();
 
 //-------For Swager docs----------------
     const swaggerJsdoc = require('swagger-jsdoc');
     const swaggerUi = require('swagger-ui-express');
-    const fs = require('fs');
-    const path = require('path');
     const swaggerDefinition = require('./docs/swaggerDef');
     const options = {
     swaggerDefinition,
@@ -78,6 +78,11 @@ Object.entries(SERVICES).forEach(([key, url]) => {
     })
   );
 });
+
+// 👇 gateway-service up to project root uploads folder
+const uploadsPath = path.resolve(__dirname, '../../uploads');
+app.use('/uploads', express.static(uploadsPath));
+
 
 // Convert any thrown Error into ApiError
 app.use(errorConverter);
