@@ -11,6 +11,7 @@
     "express": "^4.18.2",
     "express-rate-limit": "^7.5.0",
     "http-proxy-middleware": "^2.0.6",
+    "raw-body": "^3.0.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
   }

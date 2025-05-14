@@ -12,13 +12,14 @@ class ArticleController {
   /**
    * POST /api/articles
    */
-  create = async (req, res) => {
+  create = async (req, res, next) => {
     try {
-      const result = await this.articleService.createArticle(req.body);
-      const { status, message, data } = result;
-      res.status(status).send({ status, message, data });
+      const { response, statusCode } = await this.articleService.createArticle(req.body, req.user.id);
+      const { status, message, data } = response;
+      res.status(statusCode).json({ status, message, data });
     } catch (e) {
       logger.error(e);
+      // next(e);
       res.status(httpStatus.BAD_GATEWAY).send(e);
     }
   };

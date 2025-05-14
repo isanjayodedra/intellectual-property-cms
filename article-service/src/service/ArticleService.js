@@ -16,7 +16,7 @@ class ArticleService {
    * @param {Object} articleBody
    * @returns {Object}
    */
-  createArticle = async (articleBody) => {
+  createArticle = async (articleBody, author_id) => {
     try {
       // enforce unique slug
       if (articleBody.slug && await this.articleDao.findBySlug(articleBody.slug)) {
@@ -25,7 +25,7 @@ class ArticleService {
       articleBody.slug = articleBody.slug || uuidv4();
       articleBody.status = articleBody.status || articleConstant.STATUS_DRAFT;
 
-      const article = await this.articleDao.create(articleBody);
+      const article = await this.articleDao.create(articleBody, author_id);
       return responseHandler.returnSuccess(
         httpStatus.CREATED,
         'Article created successfully',

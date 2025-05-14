@@ -3,7 +3,7 @@ const db       = require('../models');
 // console.log('🛠️ Available DB models:', Object.keys(db));
 const logger   = require('../config/logger');    // ← ADD THIS LINE
 
-const { Article, ArticleTranslation, ArticleBlock, Category, Tag } = db;
+const { Article, ArticleTranslation, ArticleBlock, ArticleTag, ArticleCategory , Category, Tag, sequelize } = db;
 
 class ArticleDao extends SuperDao {
   constructor() {
@@ -52,7 +52,7 @@ class ArticleDao extends SuperDao {
   }
 
   async findById(id) {
-    const ArticleById = await Article.findByPk(9, {
+    const ArticleById = await Article.findByPk(id, {
       include: [
         { model: ArticleTranslation, as: 'ArticleTranslations' },
         { model: ArticleBlock, as: 'ArticleBlocks' },
@@ -61,6 +61,43 @@ class ArticleDao extends SuperDao {
       ]
     });
     return ArticleById;
+  }
+
+  async create(data, author_id) {
+    const transaction = await sequelize.transaction();
+    try {
+      const { translations, blocks, tag_ids, category_ids, ...articleFields } = data;
+      const article = await Article.create({ ...articleFields, author_id }, { transaction });
+
+      await Promise.all(translations.map(t =>
+        ArticleTranslation.create({ article_id: article.id, ...t }, { transaction })
+      ));
+
+      if (blocks) {
+        await Promise.all(blocks.map(b =>
+          ArticleBlock.create({ article_id: article.id, ...b }, { transaction })
+        ));
+      }
+
+      if (tag_ids) {
+        await Promise.all(tag_ids.map(tag_id =>
+          ArticleTag.create({ article_id: article.id, tag_id }, { transaction })
+        ));
+      }
+
+      if (category_ids) {
+        await Promise.all(category_ids.map(category_id =>
+          ArticleCategory.create({ article_id: article.id, category_id }, { transaction })
+        ));
+      }
+
+      await transaction.commit();
+      return await this .findById (article.id)
+      // return article;
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
+    }
   }
 
   async update(id, data) {
